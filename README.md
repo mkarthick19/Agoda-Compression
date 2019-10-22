@@ -10,7 +10,7 @@ Write a program that compresses files and folders into a set of compressed files
  4. Support different compression algorithms.
  5. Make parallel calls while compression and decompression, as much as possible.
  
-## Our Approach: 
+# Our Approach: 
 
 As mentioned in the problem, we use zip for compression algorithm [JDK Implementation]. However, our algorithm supports other compression algorithms as well and we have used strategy design pattern for the same. [Point 4]
 
