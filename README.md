@@ -52,7 +52,7 @@ We have generated only 6 files as shown in level 2 output, instead of 13 in leve
 
 We can realize the benefit of level 2 compression with more number of input files that consists of several large and small files.
 
-To perform level 2 compressions, we sort the output of level 1 files based on file sizes and then group the chunks.
+To perform level 2 compressions, we sort the output of level 1 files based on file sizes and then group the files.
 The files can present in different directories and at different depth, however our algorithm chooses files wisely and perform level 2 compression and generate the minimum number of files.
 
 # Decompression:
