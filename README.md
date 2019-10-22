@@ -24,7 +24,7 @@ Our Input Requests for compression and decompression is validated with the valid
 
 To handle above issues, we perform 2 levels of compression : 
 
-In the first level, if the input file is more than MaxCompressedSizeThresold, we split the given file into chunks of size MaxCompressedSizeThresold and zip it. Otherwise, we simply compress the input file.
+In the first level, if the input file is more than MaxCompressedSizeThresold, we split the given file into chunks of size upto MaxCompressedSizeThresold and zip it. Otherwise, we simply compress the input file.
 
 Eg: File1  = 10 MB, File2 = 2 MB, MaxCompressedSizeThresold = 4 MB.
 
