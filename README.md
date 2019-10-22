@@ -57,11 +57,13 @@ The files can present in different directories and at different depth, however o
 
 # Decompression:
 
+Decompression follows the reverse process of compression to get the original input files.
+
 Here, we first perform level 2 decompressions if any, followed by level 1 decompressions. Level 2 zips may not have been 
 
 generated, in some cases. Say the level 1 zip sizes are already same as MaxCompressedSizeThresold, then,
 
-level 2 zips would not have been generated. 
+level 2 zips would not have been generated and we perform only level 1 decompressions.
 
 After level 1 decompressions, we merge the chunks that were split before by our compression algorithm and 
 
