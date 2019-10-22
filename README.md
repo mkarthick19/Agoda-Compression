@@ -7,7 +7,7 @@ Write a program that compresses files and folders into a set of compressed files
  1. Input files can be very large. [More than JVM size].
  2. Compressed files generated can also be very large. [More than MaxCompressedSizeThresold Input]
  3. Compression output should generate less files.
- 4. Support different compression algorithms.
+ 4. Should Support different compression algorithms.
  5. Make parallel calls while compression and decompression, as much as possible.
  
 # Our Approach: 
@@ -144,7 +144,7 @@ We can see the generated output files in the output directory /Users/karthickm/D
 
 Agoda-Compression > mvn test
 
-### Code Coverage report
+### Unit tests Code Coverage report
 
 Agoda-Compression > open target/jacoco-ut/index.html
 
