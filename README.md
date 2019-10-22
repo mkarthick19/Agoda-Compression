@@ -5,7 +5,7 @@ Write a program that compresses files and folders into a set of compressed files
 # Key Challenges and Constraints: 
 
  1. Input files can be very large. [More than JVM size].
- 2. Compressed files generated can also be very large. [More than MaxCompressedSizeThresold]
+ 2. Compressed files generated can also be very large. [More than MaxCompressedSizeThresold Input]
  3. Compression output should generate less files.
  4. Support different compression algorithms.
  5. Make parallel calls while compression and decompression, as much as possible.
