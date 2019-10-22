@@ -5,18 +5,18 @@ Write a program that compresses files and folders into a set of compressed files
 # Key Challenges and Constraints: 
 
  1. Input files can be very large. [More than JVM size].
- 2. Compressed files generated can also be very large. 
+ 2. Compressed files generated can also be very large. [More than MaxCompressedSizeThresold]
  3. Compression output should generate less files.
  4. Support different compression algorithms.
  5. Make parallel calls while compression and decompression, as much as possible.
  
 ## Our Approach: 
 
-As mentioned in the problem, we use zip for compression algorithm [JDK Implementation]. However, our algorithm supports other compression algorithms as well and we use strategy design pattern for the same. [Point 4]
+As mentioned in the problem, we use zip for compression algorithm [JDK Implementation]. However, our algorithm supports other compression algorithms as well and we have used strategy design pattern for the same. [Point 4]
 
 # Input Validation:
 
-Our Input Requests for compression and decompression is validated with the validator and throws exceptions, if necessary, such as Invalid Input Directory, Input Directory with no read permissions, Input Directory does not exist, Input directory is not valid etc.
+Our Input Requests for compression and decompression is validated with the validator and throws exceptions, if necessary, such as Invalid Input Directory, Input Directory with no read permissions, Input Directory does not exist, Input directory is not valid etc. We use long datatype for MaxCompressedSizeThresold input. [expressed in MB]
 
 # Compression:
 
@@ -36,22 +36,22 @@ In the second level, in order to generate the minimum files, we perform the seco
 
 We group zips of all files that sums upto MaxCompressedSizeThresold and zip it. We repeat the above process and create level 2 zips.
 
-For Eg :  File1 (14 MB), File2(1 MB), File3 (1 MB), File4(1 MB), File5 (1 MB), File6 (1 MB)
+For Eg :  File1 (14 MB), File2(1 MB), File3 (1 MB), File4(1 MB), File5 (1 MB), File6 (1 MB), File7 (1 MB), File8(1 MB), File9 (1 MB), File10 (1 MB)
 
 MaxCompressedSizeThresold = 4 MB:
 
 Level 1 output :  File1.part_0.level1.zip (4 MB), File1.part_1.level1.zip (4MB) , File1.part_2.level1.zip(4MB),
-File1.part_3.level1.zip(2MB), File2.part_0.level1.zip (1MB), File3.part_0.level1.zip (1MB), File4.part_0.level1.zip (1MB), File5.part_0.level1.zip (1MB), File6.part_0.level1.zip (1MB)
+File1.part_3.level1.zip(2MB), File2.part_0.level1.zip (1MB), File3.part_0.level1.zip (1MB), File4.part_0.level1.zip (1MB), File5.part_0.level1.zip (1MB), File6.part_0.level1.zip (1MB), File7.part_0.level1.zip (1MB), File8.part_0.level1.zip (1MB), File9.part_0.level1.zip (1MB), File10.part_0.level1.zip (1MB)
 
-Level 2 output: Level_2_part_0.level2.zip (4MB) [Grouping files 2-5], Level_2_part_1.level2.zip (3MB) [Grouping files 6 and 6th chunk of File 1], File1.part_0.level1.zip (4 MB), File1.part_1.level1.zip (4MB) , File1.part_2.level1.zip(4MB)
+Level 2 output: Level_2_part_0.level2.zip (4MB) [Grouping files 2-5], Level_2_part_1.level2.zip (3MB) [Grouping files 6 and 6th chunk of File 1], Level_2_part_2.level2.zip (4MB) [Grouping files 7-10], File1.part_0.level1.zip (4 MB), File1.part_1.level1.zip (4MB) , File1.part_2.level1.zip(4MB)
 
 
-We have generated only 5 files as shown in level 2 output, instead of 9 in level 1 output. 
+We have generated only 6 files as shown in level 2 output, instead of 13 in level 1 output. 
 
-We can realize the benefit of level 2 compression with more number of input files that consists of large files and small files.
+We can realize the benefit of level 2 compression with more number of input files that consists of large and small files.
 
 To perform level 2 compressions, we sort the output of level 1 files and then group the chunks based on the file sizes. 
-The files can present in different directories and at different depth, however our algorithm chooses wisely and perform level 2 compression and generate minimum files.
+The files can present in different directories and at different depth, however our algorithm chooses files wisely and perform level 2 compression and generate the minimum files.
 
 # Decompression:
 
