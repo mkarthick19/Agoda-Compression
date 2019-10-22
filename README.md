@@ -4,29 +4,27 @@ Write a program that compresses files and folders into a set of compressed files
 
 # Key Challenges and Constraints: 
 
- 1. Input files can be very large. [More than JVM size]
+ 1. Input files can be very large. [More than JVM size].
  2. Compressed files generated can also be very large. 
  3. Compression output should generate less files.
- 4. Support different compression algorithms
+ 4. Support different compression algorithms.
  5. Make parallel calls while compression and decompression, as much as possible.
  
 ## Our Approach: 
 
 As mentioned in the problem, we use zip for compression algorithm [JDK Implementation]. However, our algorithm supports other compression algorithms as well and we use strategy design pattern for the same. [Point 4]
 
-[Point 5]. We use Java Executor services to make parallel calls during compression and decompression. Thread Pool size is set to 20 for our application. 
-
 # Input Validation:
 
-Our Input and Output directories and MaxCompressedSizeThresold are validated and throws exception if the request is invalid. 
+Our Input Requests for compression and decompression is validated with the validator and throws exceptions, if necessary, such as Invalid Input Directory, Input Directory with no read permissions, Input Directory does not exist, Input directory is not valid etc.
 
 # Compression:
 
 In the compression input request, maximum compressed size per file is given as input. It can be greater than JVM size. 
 
-Hence, to make the best use of threads with JVM constraints, we calculate MaxCompressedSizeThreshold as follows:
+Hence, to maximize threads for parallel execution satisfying JVM constraints, we calculate MaxCompressedSizeThreshold as follows:
 
-MaxCompressedSizeThresold = Minimum of { MaxCompressedSizeThresold Input, JVM Max. allowed memory/Thread_Pool_Size }
+MaxCompressedSizeThresold = Minimum of { MaxCompressedSizeThresold Input, (JVM Max. allowed memory/Thread_Pool_Size) }
 
 [Points 1, 2, 3]: The key problem in this challenge is, how do we handle large files and also we should generate compressed less files as possible
 
@@ -57,11 +55,19 @@ The files can present in different directories and at different depth, however o
 
 # Decompression:
 
-Here, we first perform level 2 decompressions if present, followed by level 1 decompressions. 
+Here, we first perform level 2 decompressions if any, followed by level 1 decompressions. Level 2 zips may not have been 
+
+generated, in some cases, say the level 1 zip sizes are already same as MaxCompressedSizeThresold. Then,
+
+Level 2 compression would not have been performed. 
 
 After level 1 decompressions, we merge the chunks that were split before by our compression algorithm and 
 
 generates the required output files.
+
+# Concurrency:
+
+[Point 5]. We use Java Executor services to make parallel calls during compression and decompression. Thread Pool size is set to 20, for our application. We ensures synchronization and wait for threads to complete when necessary. Eg., Level 2 compressions requires output of level 1 compression zips. 
 
 
 ## Getting Started
@@ -73,6 +79,10 @@ Desktop > git clone https://github.com/mkarthick19/Agoda-Compression.git
 ### Running the application 
 
 cd Agoda-Compression/
+
+### Build and run the tests :
+
+Agoda-Compression > mvn clean install
 
 # Sample Compression 
 
@@ -110,10 +120,6 @@ Path to output directory :
 ### Running the tests
 
 Agoda-Compression > mvn test
-
-### Build and run the tests :
-
-Agoda-Compression > mvn clean install
 
 ### Code Coverage report
 
