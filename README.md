@@ -20,7 +20,7 @@ Our Input Requests for compression and decompression is validated with the valid
 
 # Compression:
 
-[Points 1, 2, 3]: The key problem in this challenge is, how do we handle large files and  also generate less compressed files as possible.
+[Points 1, 2, 3]: The key problem in this challenge is, how do we handle large files and generate less compressed files as possible.
 
 To handle above issues, we perform 2 levels of compression : 
 
