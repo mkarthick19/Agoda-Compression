@@ -20,19 +20,27 @@ Our Input Requests for compression and decompression is validated with the valid
 
 # Compression:
 
-[Points 1, 2, 3]: The key problem in this challenge is, how do we handle large files and also we should generate compressed less files as possible
+[Points 1, 2, 3]: The key problem in this challenge is, how do we handle large files and  also generate less compressed files as possible.
 
 To handle above issues, we perform 2 levels of compression : 
 
-In the first level, if the input file is more than MaxCompressedSizeThresold, we split the given file into chunks of size MaxCompressedSizeThresold and zip it.
+In the first level, if the input file is more than MaxCompressedSizeThresold, we split the given file into chunks of size MaxCompressedSizeThresold and zip it. Otherwise, we simply compress the input file.
+
+Eg: File1  = 10 MB, File2 = 2 MB, MaxCompressedSizeThresold = 4 MB.
+
+Input files after splitting : File1.part_0.level1 (4MB), File1.part_1.level1 (4MB), File1.part_2.level1 (2MB), File2.part_0.level1 (2MB)
+
+Level 1 output : File1.part_0.level1.zip, File1.part_1.level1.zip, File1.part_2.level1.zip, File2.part_0.level1.zip
+
+The sizes of above compressed files vary depends on the file content and the media type.
 
 In the second level, in order to generate the minimum files, we perform the second level compression as follows.
 
-We group zips of all files that sums upto MaxCompressedSizeThresold and zip it. We repeat the above process and create level 2 zips.
+We group zips of selected files that sums upto MaxCompressedSizeThresold and zip it again. We repeat the above process and create level 2 zips.
 
-For Eg :  File1 (14 MB), File2(1 MB), File3 (1 MB), File4(1 MB), File5 (1 MB), File6 (1 MB), File7 (1 MB), File8(1 MB), File9 (1 MB), File10 (1 MB)
+For Eg :  File1 (14 MB), File2(2 MB), File3 (2 MB), File4(2 MB), File5 (2 MB), File6 (2 MB), File7 (2 MB), File8(2 MB), File9 (2 MB), File10 (1 MB)
 
-MaxCompressedSizeThresold = 4 MB:
+MaxCompressedSizeThresold = 4 MB. For simplicity, assume the level 1 output produces following zip with the file sizes mentioned.
 
 Level 1 output :  File1.part_0.level1.zip (4 MB), File1.part_1.level1.zip (4MB) , File1.part_2.level1.zip(4MB),
 File1.part_3.level1.zip(2MB), File2.part_0.level1.zip (1MB), File3.part_0.level1.zip (1MB), File4.part_0.level1.zip (1MB), File5.part_0.level1.zip (1MB), File6.part_0.level1.zip (1MB), File7.part_0.level1.zip (1MB), File8.part_0.level1.zip (1MB), File9.part_0.level1.zip (1MB), File10.part_0.level1.zip (1MB)
