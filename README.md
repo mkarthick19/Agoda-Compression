@@ -32,7 +32,7 @@ Input files after splitting : File1.part_0.level1 (4MB), File1.part_1.level1 (4M
 
 Level 1 output : File1.part_0.level1.zip, File1.part_1.level1.zip, File1.part_2.level1.zip, File2.part_0.level1.zip
 
-The sizes of above compressed files vary depends on the file content and the media type.
+The sizes of above compressed files vary depends on the file content, media type and the compression.
 
 In the second level, in order to generate the minimum files, we perform the second level compression as follows.
 
