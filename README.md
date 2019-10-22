@@ -144,11 +144,11 @@ We can see the generated output files in the output directory /Users/karthickm/D
 
 Agoda-Compression > mvn test
 
-### Unit tests Code Coverage report
+### Unit Tests Code Coverage report
 
 Agoda-Compression > open target/jacoco-ut/index.html
 
-### Languages and tools Used:
+### Languages and Tools used:
 
 We have used the following languages, tools and design patterns.
 
