@@ -16,11 +16,11 @@ As mentioned in the problem, we use zip for compression algorithm [JDK Implement
 
 # Input Validation:
 
-Our Input Requests for compression and decompression is validated with the validator and throws exceptions, if necessary, such as Invalid Input Directory, Input Directory with no read permissions, Input Directory does not exist, Input directory is not valid etc. We use long datatype for MaxCompressedSizeThresold input. [expressed in MB]
+Our Input Requests for compression and decompression is validated with the validator and throws exceptions, if necessary, such as Invalid Input Directory, Input Directory with no read permissions, Input Directory does not exist, etc. Also, we use long datatype for MaxCompressedSizeThresold input. [expressed in MB]
 
 # Compression:
 
-[Points 1, 2, 3]: The key problem in this challenge is, how do we handle large files and generate less compressed files as possible.
+[Points 1, 2, 3]: The key challenge is, how do we handle large files satisfying all constraints such as JVM size, MaxCompressedSizeThresold etc and generate less compressed files as possible.
 
 To handle above issues, we perform 2 levels of compression : 
 
