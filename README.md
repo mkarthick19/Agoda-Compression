@@ -36,11 +36,12 @@ The sizes of above compressed files vary depends on the file content, media type
 
 In the second level, in order to generate the minimum files, we perform the second level compression as follows.
 
-We group zips of selected files that sums upto MaxCompressedSizeThresold and zip it again. We repeat the above process and create level 2 zips.
+To perform level 2 compressions, we sort the output of level 1 files based on file sizes. Then select the first K files such that their total file sizes is lesser than or equal to MaxCompressedSizeThresold and group it. We perform above operations repeatedly either until we reach the end of the list or we find that we cannot form a group of size more than one.
+The files can present in different directories and at different depth, however our algorithm chooses files wisely and perform level 2 compression and generate the minimum number of files. 
 
-For Eg :  File1 (14 MB), File2(2 MB), File3 (2 MB), File4(2 MB), File5 (2 MB), File6 (2 MB), File7 (2 MB), File8(2 MB), File9 (2 MB), File10 (1 MB)
+For Eg :  File1 (14 MB), File2(2 MB), File3 (2 MB), File4(2 MB), File5 (2 MB), File6 (2 MB), File7 (2 MB), File8(2 MB), File9 (2 MB), File10 (2 MB)
 
-MaxCompressedSizeThresold = 4 MB. For simplicity, assume the level 1 output produces following zip with the file sizes mentioned.
+MaxCompressedSizeThresold = 4 MB. Let's assume the level 1 output produces the following zips with the file sizes mentioned.
 
 Level 1 output :  File1.part_0.level1.zip (4 MB), File1.part_1.level1.zip (4MB) , File1.part_2.level1.zip(4MB),
 File1.part_3.level1.zip(2MB), File2.part_0.level1.zip (1MB), File3.part_0.level1.zip (1MB), File4.part_0.level1.zip (1MB), File5.part_0.level1.zip (1MB), File6.part_0.level1.zip (1MB), File7.part_0.level1.zip (1MB), File8.part_0.level1.zip (1MB), File9.part_0.level1.zip (1MB), File10.part_0.level1.zip (1MB)
@@ -48,12 +49,9 @@ File1.part_3.level1.zip(2MB), File2.part_0.level1.zip (1MB), File3.part_0.level1
 Level 2 output: Level_2_part_0.level2.zip (4MB) [Grouping files 2-5], Level_2_part_1.level2.zip (4MB) [Grouping files 6-9], Level_2_part_2.level2.zip (3MB) [Grouping files 10 and 4th chunk of File 1], File1.part_0.level1.zip (4 MB), File1.part_1.level1.zip (4MB) , File1.part_2.level1.zip(4MB)
 
 
-We have generated only 6 files as shown in level 2 output, instead of 13 in level 1 output. 
+We have generated only 6 compressed files as shown in level 2 output, instead of 13 in level 1 output. 
 
 We can realize the benefit of level 2 compression with more number of input files that consists of several large and small files.
-
-To perform level 2 compressions, we sort the output of level 1 files based on file sizes and then group the files.
-The files can present in different directories and at different depth, however our algorithm chooses files wisely and perform level 2 compression and generate the minimum number of files.
 
 # Decompression:
 
@@ -63,11 +61,23 @@ Here, we first perform level 2 decompressions if any, followed by level 1 decomp
 
 generated, in some cases. Say the level 1 zip sizes are already same as MaxCompressedSizeThresold, then,
 
-level 2 zips would not have been generated and we perform only level 1 decompressions.
+level 2 zips would not have been generated as we cannot form a group of size more than one and we perform only level 1 decompressions.
 
-After level 1 decompressions, we merge the chunks that were split before by our compression algorithm and 
+After level 1 decompressions, we get the file chunks and we merge it and generates the required output files.
 
-generates the required output files.
+Eg: 
+
+Compressed Directory :
+
+Level2_part_0.level2.zip, File1_part_0.level1.zip, File2_part_0.level1.zip    
+
+After 1st level decompression:
+
+File1_part_0.level1.zip, File2_part_0.level1.zip , File3_part_0.level1.zip, File3_part_1.level1.zip, File4_part_0.level1.zip
+
+After 2nd level decompression:
+
+File1, File2, File3, File4 
 
 # Concurrency:
 
