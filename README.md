@@ -20,12 +20,6 @@ Our Input Requests for compression and decompression is validated with the valid
 
 # Compression:
 
-In the compression input request, maximum compressed size per file is given as input. It can be greater than JVM size. 
-
-Hence, to maximize threads for parallel execution satisfying JVM constraints, we calculate MaxCompressedSizeThreshold as follows:
-
-MaxCompressedSizeThresold = Minimum of { MaxCompressedSizeThresold Input, (JVM Max. allowed memory/Thread_Pool_Size) }
-
 [Points 1, 2, 3]: The key problem in this challenge is, how do we handle large files and also we should generate compressed less files as possible
 
 To handle above issues, we perform 2 levels of compression : 
@@ -43,23 +37,23 @@ MaxCompressedSizeThresold = 4 MB:
 Level 1 output :  File1.part_0.level1.zip (4 MB), File1.part_1.level1.zip (4MB) , File1.part_2.level1.zip(4MB),
 File1.part_3.level1.zip(2MB), File2.part_0.level1.zip (1MB), File3.part_0.level1.zip (1MB), File4.part_0.level1.zip (1MB), File5.part_0.level1.zip (1MB), File6.part_0.level1.zip (1MB), File7.part_0.level1.zip (1MB), File8.part_0.level1.zip (1MB), File9.part_0.level1.zip (1MB), File10.part_0.level1.zip (1MB)
 
-Level 2 output: Level_2_part_0.level2.zip (4MB) [Grouping files 2-5], Level_2_part_1.level2.zip (3MB) [Grouping files 6 and 6th chunk of File 1], Level_2_part_2.level2.zip (4MB) [Grouping files 7-10], File1.part_0.level1.zip (4 MB), File1.part_1.level1.zip (4MB) , File1.part_2.level1.zip(4MB)
+Level 2 output: Level_2_part_0.level2.zip (4MB) [Grouping files 2-5], Level_2_part_1.level2.zip (4MB) [Grouping files 6-9], Level_2_part_2.level2.zip (3MB) [Grouping files 10 and 4th chunk of File 1], File1.part_0.level1.zip (4 MB), File1.part_1.level1.zip (4MB) , File1.part_2.level1.zip(4MB)
 
 
 We have generated only 6 files as shown in level 2 output, instead of 13 in level 1 output. 
 
-We can realize the benefit of level 2 compression with more number of input files that consists of large and small files.
+We can realize the benefit of level 2 compression with more number of input files that consists of several large and small files.
 
-To perform level 2 compressions, we sort the output of level 1 files and then group the chunks based on the file sizes. 
-The files can present in different directories and at different depth, however our algorithm chooses files wisely and perform level 2 compression and generate the minimum files.
+To perform level 2 compressions, we sort the output of level 1 files based on file sizes and then group the chunks.
+The files can present in different directories and at different depth, however our algorithm chooses files wisely and perform level 2 compression and generate the minimum number of files.
 
 # Decompression:
 
 Here, we first perform level 2 decompressions if any, followed by level 1 decompressions. Level 2 zips may not have been 
 
-generated, in some cases, say the level 1 zip sizes are already same as MaxCompressedSizeThresold. Then,
+generated, in some cases. Say the level 1 zip sizes are already same as MaxCompressedSizeThresold, then,
 
-Level 2 compression would not have been performed. 
+level 2 zips would not have been generated. 
 
 After level 1 decompressions, we merge the chunks that were split before by our compression algorithm and 
 
@@ -69,6 +63,21 @@ generates the required output files.
 
 [Point 5]. We use Java Executor services to make parallel calls during compression and decompression. Thread Pool size is set to 20, for our application. We ensures synchronization and wait for threads to complete when necessary. Eg., Level 2 compressions requires output of level 1 compression zips. 
 
+In the compression input request, maximum compressed size per file is given as input. It can be greater than JVM size. 
+
+Hence, to maximize threads for parallel execution satisfying JVM constraints, we calculate MaxCompressedSizeThreshold as follows:
+
+MaxCompressedSizeThresold = Minimum of { MaxCompressedSizeThresold Input, (JVM Max. allowed memory/Thread_Pool_Size) }.
+
+Eg 1 : MaxCompressedSizeThresold = 100 MB, JVM Max. allowed memory = 3000 MB, Thread_Pool_Size = 20
+
+MaxCompressedSizeThresold = Min (100, 150) = 100 MB
+
+Eg 2 : MaxCompressedSizeThresold = 200 MB, JVM Max. allowed memory = 3000 MB, Thread_Pool_Size = 20
+
+MaxCompressedSizeThresold = Min (200, 150) = 150 MB.
+
+Here, our file chunk size can be upto 150 MB and all 20 threads can run tasks concurrently as it does not exceed JVM Max memory (20*150MB = 3000MB)
 
 ## Getting Started
 
@@ -102,6 +111,8 @@ Path to output directory :
 Maximum Compressed Size per file threshold :
 4
 
+We can see the generated compressed files in the output directory /Users/karthickm/Compressed/
+
 # Sample Decompression 
 
 Agoda-Compression > mvn spring-boot:run
@@ -116,6 +127,8 @@ Path to input directory :
 
 Path to output directory :
 /Users/karthickm/Decompressed   
+
+We can see the generated output files in the output directory /Users/karthickm/Decompressed
 
 ### Running the tests
 
